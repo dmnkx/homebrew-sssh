@@ -1,0 +1,28 @@
+# Binaries
+sssh
+sssh.exe
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go
+vendor/
+bin/
+dist/
+coverage.out
+coverage.html
+
+# Debug / IDE
+.cursor/
+.idea/
+.vscode/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db

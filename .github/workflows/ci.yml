@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Test
+        run: go test ./... -count=1 -race
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Build
+        run: go build -o sssh .
+
+  release:
+    name: Release
+    needs: test
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build binaries
+        run: |
+          mkdir -p dist
+          GOOS=linux   GOARCH=amd64 go build -o dist/sssh-linux-amd64 .
+          GOOS=linux   GOARCH=arm64 go build -o dist/sssh-linux-arm64 .
+          GOOS=darwin  GOARCH=amd64 go build -o dist/sssh-darwin-amd64 .
+          GOOS=darwin  GOARCH=arm64 go build -o dist/sssh-darwin-arm64 .
+          GOOS=windows GOARCH=amd64 go build -o dist/sssh-windows-amd64.exe .
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
