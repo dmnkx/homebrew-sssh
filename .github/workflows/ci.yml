@@ -58,7 +58,7 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: Release and update Homebrew formula
+      - name: GitHub Release
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
@@ -66,3 +66,22 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Homebrew formula
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout main
+          bash scripts/update-formula.sh "${GITHUB_REF_NAME}"
+          git add Formula/sssh.rb
+          if git diff --staged --quiet; then
+            echo "formula unchanged"
+            exit 0
+          fi
+          git commit -m "Brew formula update for sssh ${GITHUB_REF_NAME}"
+          git push origin main
+
