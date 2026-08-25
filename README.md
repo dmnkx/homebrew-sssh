@@ -11,11 +11,18 @@
 
 ## 설치 / 실행
 
-Homebrew (저장소가 tap `dmnkx/sssh`):
+Homebrew (공식 core가 아니라 **이 저장소 tap의 Cask**입니다. `brew install sssh`만 치면 core에서 비슷한 이름만 찾습니다):
+
+```bash
+brew install --cask dmnkx/sssh/sssh
+```
+
+이미 tap만 한 상태라면:
 
 ```bash
 brew tap dmnkx/sssh
-brew install sssh
+brew update
+brew install --cask sssh
 ```
 
 버전 태그를 푸시하면 GitHub Actions가 바이너리 릴리스를 만들고 `Formula/sssh.rb`를 같은 저장소에 갱신합니다.
@@ -164,7 +171,7 @@ internal/tui/           호스트 선택 UI
 워크플로: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 
 1. `main`/`master` 푸시와 Pull Request → `go test`, `go vet`, `go build`, GoReleaser 설정 검사
-2. `v*` 태그 푸시 → 테스트 성공 후 GoReleaser가 GitHub Release(바이너리·checksum)를 만들고 `Formula/sssh.rb`를 이 저장소에 커밋합니다. URL과 SHA256은 릴리스 에셋에서 자동으로 채웁니다.
+2. `v*` 태그 푸시 → 테스트 성공 후 GoReleaser가 GitHub Release(바이너리·checksum)를 만들고 `Casks/sssh.rb`를 이 저장소에 커밋합니다. URL과 SHA256은 릴리스 에셋에서 자동으로 채웁니다.
 
 ## 대화 기록
 
