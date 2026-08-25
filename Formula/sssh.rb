@@ -1,7 +1,7 @@
 class Sssh < Formula
   desc "SSH into hosts using ~/.ssh/config aliases"
   homepage "https://github.com/dmnkx/homebrew-sssh"
-  version "0.1.4"
+  version "0.1.5"
   license "MIT"
 
   livecheck do
@@ -12,23 +12,23 @@ class Sssh < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/dmnkx/homebrew-sssh/releases/download/v0.1.4/sssh_0.1.4_darwin_arm64.tar.gz"
-      sha256 "c003cbff0115756ba97a79322a0d577a2d0014a423018e740aa417df01fd69a0"
+      url "https://github.com/dmnkx/homebrew-sssh/releases/download/v0.1.5/sssh_0.1.5_darwin_arm64.tar.gz"
+      sha256 "e6068acfb2ad11bea22d8506c58ec0eb830a9d67a644bb6b4f15ba644d05bcf0"
     end
     on_intel do
-      url "https://github.com/dmnkx/homebrew-sssh/releases/download/v0.1.4/sssh_0.1.4_darwin_amd64.tar.gz"
-      sha256 "7cd7f9b133a62c24135677ae1b3f738102327e85e992c7d995db560dea0a161a"
+      url "https://github.com/dmnkx/homebrew-sssh/releases/download/v0.1.5/sssh_0.1.5_darwin_amd64.tar.gz"
+      sha256 "d3485095ba9cdb5dffbc94a961cc9a3d7d04e8f79738762bf853fcc764b28b2e"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/dmnkx/homebrew-sssh/releases/download/v0.1.4/sssh_0.1.4_linux_arm64.tar.gz"
-      sha256 "793870bec47e2ba86d8561caa501e0101ef9bfecd572ef790864e8212d204732"
+      url "https://github.com/dmnkx/homebrew-sssh/releases/download/v0.1.5/sssh_0.1.5_linux_arm64.tar.gz"
+      sha256 "b658f320a8e3ecd2fa45be5405030c3e7461c698a7956902f094eba1c95dac32"
     end
     on_intel do
-      url "https://github.com/dmnkx/homebrew-sssh/releases/download/v0.1.4/sssh_0.1.4_linux_amd64.tar.gz"
-      sha256 "deb61c4f017530b0654df5c4650e15b907c5b9b922ebf98a71fc1677ec8349cf"
+      url "https://github.com/dmnkx/homebrew-sssh/releases/download/v0.1.5/sssh_0.1.5_linux_amd64.tar.gz"
+      sha256 "ec31d223e400a5c9f5921b05d54def22f0b2305e4b6012e8d5189e026fe6d786"
     end
   end
 
