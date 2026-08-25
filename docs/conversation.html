@@ -113,13 +113,17 @@
       <p>2026년 8월 24일 ~ 25일 · Cursor에서 나눈 요청과 결정 요약</p>
       <nav>
         <a href="../README.md">README.md</a>
-        <a href="#t1">1. 주석</a>
-        <a href="#t2">2. 테스트·CI</a>
-        <a href="#t3">3. 테스트 폴더</a>
-        <a href="#t4">4. main.go</a>
-        <a href="#t5">5. 분리</a>
-        <a href="#t6">6. 파일별 테스트</a>
-        <a href="#t7">7. 문서</a>
+        <a href="#t1">1. 기획</a>
+        <a href="#t2">2. 이름</a>
+        <a href="#t3">3. gitignore</a>
+        <a href="#t4">4. 주석</a>
+        <a href="#t5">5. 테스트·CI</a>
+        <a href="#t6">6. 테스트 폴더</a>
+        <a href="#t7">7. main.go</a>
+        <a href="#t8">8. 분리</a>
+        <a href="#t9">9. 파일별 테스트</a>
+        <a href="#t10">10. 문서</a>
+        <a href="#t11">11. 앞선 대화 추가</a>
       </nav>
     </div>
   </header>
@@ -127,17 +131,87 @@
     <section class="toc">
       <h2>한눈에 보기</h2>
       <ol>
+        <li>SSH 별명 CLI를 Go로 만들기로 했고, <code>~/.ssh/config</code>와 TUI+인자 접속을 골랐다.</li>
+        <li>서비스·바이너리 이름을 <code>sssh</code>로 정하고 첫 구현을 넣었다.</li>
+        <li><code>.gitignore</code>를 추가했다.</li>
         <li><code>main.go</code>에 Go 학습용 상세 주석을 달았다.</li>
         <li>단위 테스트와 GitHub Actions(테스트 통과 후에만 배포)를 넣었다.</li>
         <li>테스트를 <code>test/</code>로 모으는 것은 Go 관례에 맞지 않아 패키지 옆 <code>_test.go</code>를 유지했다.</li>
         <li>CLI를 <code>internal/cli</code>로 옮겨 <code>main.go</code>를 진입점만 남겼다.</li>
         <li>소스 파일 단위로 테스트를 나눴다.</li>
         <li>이 HTML과 README로 대화·기능을 정리했다.</li>
+        <li>그보다 앞선 기획·이름·gitignore 대화를 이 HTML 앞에 끼워 넣었다.</li>
       </ol>
     </section>
 
     <article id="t1">
-      <h2>1. main.go에 학습용 주석</h2>
+      <h2>1. Go SSH 별명 CLI 기획</h2>
+      <p class="meta">2026-08-24 · Plan 모드</p>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble">
+          Go로 CLI 툴을 만들려 한다. SSH 접속 환경을 저장하고 별명을 붙여,
+          별명만 고르면 키·유저·IP 등을 자동으로 넣어 원하는 SSH에 접속하게 하고 싶다.
+        </div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">저장 방식과 선택 UI를 물었다.</div>
+      </div>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble">
+          <ul>
+            <li>저장: 기존 <code>~/.ssh/config</code>와 호환 (호스트를 ssh config <code>Host</code>로 매핑)</li>
+            <li>UI: 둘 다 — 인자가 없으면 TUI, 있으면 바로 접속</li>
+          </ul>
+        </div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">
+          별도 DB/YAML 없이 OpenSSH config의 <code>Host</code>를 별명으로 쓰고,
+          Go에서 SSH 프로토콜을 구현하지 않고 <code>syscall.Exec</code>로 시스템 <code>ssh</code>를 실행하는 계획을 잡았다.
+          cobra, bubbletea, Host 블록 보존 파서를 쓰기로 했다.
+        </div>
+      </div>
+    </article>
+
+    <article id="t2">
+      <h2>2. 서비스 이름 sssh</h2>
+      <p class="meta">2026-08-24</p>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble">서비스 이름은 <code>sssh</code>로 해 달라.</div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">
+          모듈·바이너리 이름을 <code>sssh</code>로 두고 구현했다.
+          <code>sssh</code> / <code>sssh prod</code>, <code>add</code> / <code>list</code> / <code>show</code> / <code>edit</code> / <code>rm</code>,
+          <code>--print-cmd</code>, 저장 시 <code>.bak</code> 백업이 동작한다.
+        </div>
+      </div>
+    </article>
+
+    <article id="t3">
+      <h2>3. gitignore</h2>
+      <p class="meta">2026-08-24</p>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble">gitignore 파일을 만들고 내용을 추가해 달라.</div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">
+          루트에 <code>.gitignore</code>를 만들었다. 바이너리 <code>sssh</code>, 테스트·커버리지 산출물,
+          <code>.cursor</code> 디버그 로그, IDE·OS 임시 파일을 무시한다.
+        </div>
+      </div>
+    </article>
+
+    <article id="t4">
+      <h2>4. main.go에 학습용 주석</h2>
       <p class="meta">2026-08-24</p>
       <div class="msg">
         <div class="who user">사용자</div>
@@ -152,8 +226,8 @@
       </div>
     </article>
 
-    <article id="t2">
-      <h2>2. 테스트와 GitHub Actions 배포</h2>
+    <article id="t5">
+      <h2>5. 테스트와 GitHub Actions 배포</h2>
       <p class="meta">2026-08-24</p>
       <div class="msg">
         <div class="who user">사용자</div>
@@ -172,8 +246,8 @@
       </div>
     </article>
 
-    <article id="t3">
-      <h2>3. 테스트를 test 폴더에 모을 수 있는가</h2>
+    <article id="t6">
+      <h2>6. 테스트를 test 폴더에 모을 수 있는가</h2>
       <p class="meta">2026-08-24 · Ask 모드</p>
       <div class="msg">
         <div class="who user">사용자</div>
@@ -189,8 +263,8 @@
       </div>
     </article>
 
-    <article id="t4">
-      <h2>4. main.go는 가볍게</h2>
+    <article id="t7">
+      <h2>7. main.go는 가볍게</h2>
       <p class="meta">2026-08-24 · Ask 모드</p>
       <div class="msg">
         <div class="who user">사용자</div>
@@ -218,8 +292,8 @@
       </div>
     </article>
 
-    <article id="t5">
-      <h2>5. CLI를 internal/cli로 분리</h2>
+    <article id="t8">
+      <h2>8. CLI를 internal/cli로 분리</h2>
       <p class="meta">2026-08-24 · Agent 모드</p>
       <div class="msg">
         <div class="who user">사용자</div>
@@ -238,8 +312,8 @@
       </div>
     </article>
 
-    <article id="t6">
-      <h2>6. 파일별 테스트</h2>
+    <article id="t9">
+      <h2>9. 파일별 테스트</h2>
       <p class="meta">2026-08-24</p>
       <div class="msg">
         <div class="who user">사용자</div>
@@ -256,8 +330,8 @@
       </div>
     </article>
 
-    <article id="t7">
-      <h2>7. HTML 기록과 README</h2>
+    <article id="t10">
+      <h2>10. HTML 기록과 README</h2>
       <p class="meta">2026-08-25</p>
       <div class="msg">
         <div class="who user">사용자</div>
@@ -266,6 +340,20 @@
       <div class="msg">
         <div class="who agent">에이전트</div>
         <div class="bubble">이 문서가 대화 요약이고, 사용법은 저장소 루트의 <code>README.md</code>에 정리했다.</div>
+      </div>
+    </article>
+    <article id="t11">
+      <h2>11. 앞선 대화를 HTML에 추가</h2>
+      <p class="meta">2026-08-25</p>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble">이 대화 내용을 docs HTML에 추가해 달라. docs에 있는 대화는 이 대화 이후에 나온 것이다.</div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">
+          기획·<code>sssh</code> 이름·gitignore를 1~3번으로 앞에 두고, 기존 항목을 4~10번으로 밀었다.
+        </div>
       </div>
     </article>
   </main>

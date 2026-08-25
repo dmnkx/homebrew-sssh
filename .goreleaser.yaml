@@ -1,0 +1,51 @@
+version: 2
+
+project_name: sssh
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    binary: sssh
+    ldflags:
+      - -s -w
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+
+brews:
+  - name: sssh
+    homepage: https://github.com/dmnkx/homebrew-sssh
+    description: SSH into hosts using ~/.ssh/config aliases
+    license: MIT
+    directory: Formula
+    repository:
+      owner: dmnkx
+      name: homebrew-sssh
+    commit_author:
+      name: github-actions[bot]
+      email: 41898282+github-actions[bot]@users.noreply.github.com
+    commit_msg_template: "Brew formula update for sssh {{ .Tag }}"
+    test: |
+      system "#{bin}/sssh", "--help"
