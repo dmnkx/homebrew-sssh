@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>sssh 작업 대화 기록</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --paper: #fffdf8;
+      --ink: #1c1917;
+      --muted: #57534e;
+      --line: #e7e5e4;
+      --user: #1e3a5f;
+      --user-bg: #e8eef5;
+      --agent: #14532d;
+      --agent-bg: #ecf4ee;
+      --tag: #78716c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+    }
+    header {
+      background: var(--ink);
+      color: #fafafa;
+      padding: 2.25rem 1.5rem 1.75rem;
+    }
+    header .wrap, main { max-width: 820px; margin: 0 auto; }
+    header h1 { margin: 0 0 0.4rem; font-size: 1.55rem; font-weight: 650; }
+    header p { margin: 0; color: #d6d3d1; font-size: 0.95rem; }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1.25rem 0 0;
+    }
+    nav a {
+      color: #fafafa;
+      text-decoration: none;
+      border: 1px solid #44403c;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+    }
+    nav a:hover { background: #292524; }
+    main { padding: 1.5rem 1.25rem 3rem; }
+    .toc {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      margin-bottom: 1.75rem;
+    }
+    .toc h2 { margin: 0 0 0.6rem; font-size: 0.95rem; }
+    .toc ol { margin: 0; padding-left: 1.2rem; }
+    .toc a { color: var(--user); }
+    article {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.15rem 1.25rem 1.25rem;
+      margin-bottom: 1.15rem;
+    }
+    article h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.12rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .meta { color: var(--muted); font-size: 0.82rem; margin: -0.4rem 0 0.9rem; }
+    .msg { display: grid; grid-template-columns: 4.2rem 1fr; gap: 0.65rem; margin: 0.85rem 0; }
+    .who {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      padding-top: 0.45rem;
+    }
+    .who.user { color: var(--user); }
+    .who.agent { color: var(--agent); }
+    .bubble {
+      border-radius: 10px;
+      padding: 0.7rem 0.85rem;
+      font-size: 0.95rem;
+    }
+    .user + .bubble { background: var(--user-bg); }
+    .agent + .bubble { background: var(--agent-bg); }
+    ul { margin: 0.35rem 0 0; padding-left: 1.15rem; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.86em;
+      background: #f5f5f4;
+      padding: 0.05em 0.35em;
+      border-radius: 4px;
+    }
+    footer {
+      max-width: 820px;
+      margin: 0 auto 2rem;
+      padding: 0 1.25rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>sssh 개발 대화 기록</h1>
+      <p>2026년 8월 24일 ~ 25일 · Cursor에서 나눈 요청과 결정 요약</p>
+      <nav>
+        <a href="../README.md">README.md</a>
+        <a href="#t1">1. 주석</a>
+        <a href="#t2">2. 테스트·CI</a>
+        <a href="#t3">3. 테스트 폴더</a>
+        <a href="#t4">4. main.go</a>
+        <a href="#t5">5. 분리</a>
+        <a href="#t6">6. 파일별 테스트</a>
+        <a href="#t7">7. 문서</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="toc">
+      <h2>한눈에 보기</h2>
+      <ol>
+        <li><code>main.go</code>에 Go 학습용 상세 주석을 달았다.</li>
+        <li>단위 테스트와 GitHub Actions(테스트 통과 후에만 배포)를 넣었다.</li>
+        <li>테스트를 <code>test/</code>로 모으는 것은 Go 관례에 맞지 않아 패키지 옆 <code>_test.go</code>를 유지했다.</li>
+        <li>CLI를 <code>internal/cli</code>로 옮겨 <code>main.go</code>를 진입점만 남겼다.</li>
+        <li>소스 파일 단위로 테스트를 나눴다.</li>
+        <li>이 HTML과 README로 대화·기능을 정리했다.</li>
+      </ol>
+    </section>
+
+    <article id="t1">
+      <h2>1. main.go에 학습용 주석</h2>
+      <p class="meta">2026-08-24</p>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble"><code>main.go</code>에 최대한 자세한 주석을 달아 달라. 주석을 보면서 Go를 배우려 한다.</div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">
+          패키지·import·제로 값·포인터·에러 처리·클로저·range·comma-ok·cobra 플래그 등을 코드 옆에 한글로 설명했다.
+          동작은 바꾸지 않았고 빌드가 통과했다.
+        </div>
+      </div>
+    </article>
+
+    <article id="t2">
+      <h2>2. 테스트와 GitHub Actions 배포</h2>
+      <p class="meta">2026-08-24</p>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble">테스트 로직을 추가해 달라. GitHub Actions로 자동 배포할 건데, 배포 전에 테스트를 통과해야만 한다.</div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">
+          <ul>
+            <li><code>sshcfg</code>, <code>connect</code>, <code>tui</code>, CLI 테스트를 추가했다.</li>
+            <li>CLI 테스트를 위해 <code>newRoot()</code>로 커맨드 트리를 분리했다.</li>
+            <li><code>.github/workflows/ci.yml</code>: PR·푸시 시 <code>go test</code> / <code>vet</code> / <code>build</code>.</li>
+            <li><code>v*</code> 태그 푸시 시에만, 테스트 잡이 성공한 뒤 바이너리를 GitHub Release에 올린다.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <article id="t3">
+      <h2>3. 테스트를 test 폴더에 모을 수 있는가</h2>
+      <p class="meta">2026-08-24 · Ask 모드</p>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble">테스트 파일들을 <code>test</code> 폴더에 모아두면 안 되나?</div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">
+          가능은 하지만 Go에서는 권장하지 않는다. <code>go test</code>는 같은 디렉터리의 <code>*_test.go</code>만 그 패키지로 컴파일한다.
+          한곳에 모으면 비공개 함수(<code>empty</code>, TUI <code>model</code> 등)를 직접 테스트하기 어렵다.
+          픽스처는 <code>testdata/</code>, 코드는 패키지 옆이 맞다.
+        </div>
+      </div>
+    </article>
+
+    <article id="t4">
+      <h2>4. main.go는 가볍게</h2>
+      <p class="meta">2026-08-24 · Ask 모드</p>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble"><code>main.go</code>는 최대한 가볍게 가져가는 게 좋다고 들었다.</div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">
+          <code>func main</code>은 이미 얇고, 파싱·SSH·TUI는 <code>internal/</code>에 있었다.
+          남은 무게는 cobra 조립과 학습용 장문 주석이다.
+          같은 패키지에서 파일만 나누거나, <code>internal/cli</code>로 빼는 단계를 제안했다.
+        </div>
+      </div>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble">분리하는 게 유지보수하기 좋겠지?</div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">
+          커맨드가 늘수록 이득이다. 다만 지금 규모에서는 파일 분할만으로도 충분할 수 있다.
+          전역 플래그 변수와 낡은 주석이 유지보수에 더 큰 영향을 준다.
+          커맨드가 늘 것 같으면 <code>internal/cli</code>가 맞다고 정리했다.
+        </div>
+      </div>
+    </article>
+
+    <article id="t5">
+      <h2>5. CLI를 internal/cli로 분리</h2>
+      <p class="meta">2026-08-24 · Agent 모드</p>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble">커맨드가 늘어날 수도 있으니 분리해 달라.</div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">
+          <ul>
+            <li><code>main.go</code>는 <code>cli.NewRoot().Execute()</code>만 호출한다.</li>
+            <li>서브커맨드는 <code>list.go</code>, <code>add.go</code>, <code>edit.go</code> 등으로 나눴다.</li>
+            <li>플래그는 패키지 전역 대신 <code>options</code> 구조체로 넣었다.</li>
+            <li>CLI 테스트는 <code>internal/cli/cli_test.go</code>로 옮겼다.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <article id="t6">
+      <h2>6. 파일별 테스트</h2>
+      <p class="meta">2026-08-24</p>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble">각각의 Go 파일에 테스트 코드를 작성할 수 있으면 작성해 달라.</div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">
+          CLI를 <code>list_test.go</code> 등 소스와 짝이 되는 파일로 나눴다.
+          <code>connect.Exec</code>(ssh 없음), <code>debuglog</code>, TUI 키 입력, <code>sshcfg</code> 헬퍼 테스트를 보탰다.
+          <code>main.go</code>는 진입점만 있어 테스트하지 않았다.
+          <code>--print-cmd</code>를 persistent 플래그로 바꿔 <code>sssh connect --print-cmd</code>도 동작하게 했다.
+        </div>
+      </div>
+    </article>
+
+    <article id="t7">
+      <h2>7. HTML 기록과 README</h2>
+      <p class="meta">2026-08-25</p>
+      <div class="msg">
+        <div class="who user">사용자</div>
+        <div class="bubble">지금까지의 대화를 HTML로 보기 쉽게 만들고, CLI 기능 설명을 <code>README.md</code>로 작성해 달라.</div>
+      </div>
+      <div class="msg">
+        <div class="who agent">에이전트</div>
+        <div class="bubble">이 문서가 대화 요약이고, 사용법은 저장소 루트의 <code>README.md</code>에 정리했다.</div>
+      </div>
+    </article>
+  </main>
+  <footer>
+    전체 채팅 원문은 Cursor 대화에 남아 있다. 이 파일은 결정과 결과 위주로 줄인 기록이다.
+  </footer>
+</body>
+</html>
