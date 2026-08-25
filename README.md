@@ -11,21 +11,25 @@
 
 ## 설치 / 실행
 
-Homebrew (공식 core가 아니라 **이 저장소 tap의 Cask**입니다. `brew install sssh`만 치면 core에서 비슷한 이름만 찾습니다):
-
-```bash
-brew install --cask dmnkx/sssh/sssh
-```
-
-이미 tap만 한 상태라면:
-
 ```bash
 brew tap dmnkx/sssh
-brew update
-brew install --cask sssh
+brew install sssh
 ```
 
-버전 태그를 푸시하면 GitHub Actions가 바이너리 릴리스를 만들고 `Formula/sssh.rb`를 같은 저장소에 갱신합니다.
+탭 저장소(`github.com/dmnkx/homebrew-sssh`)의 `Formula/sssh.rb`를 사용합니다. 이 파일이 GitHub `main`에 있어야 위 명령이 동작합니다. 예전에 탭만 해 두었다면:
+
+```bash
+brew update
+brew install sssh
+```
+
+`Formula/sssh.rb`가 없는 예전 클론이면 탭을 다시 받습니다.
+
+```bash
+brew untap dmnkx/sssh
+brew tap dmnkx/sssh
+brew install sssh
+```
 
 ```bash
 git tag v0.1.0
@@ -171,7 +175,7 @@ internal/tui/           호스트 선택 UI
 워크플로: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 
 1. `main`/`master` 푸시와 Pull Request → `go test`, `go vet`, `go build`, GoReleaser 설정 검사
-2. `v*` 태그 푸시 → 테스트 성공 후 GoReleaser가 GitHub Release(바이너리·checksum)를 만들고 `Casks/sssh.rb`를 이 저장소에 커밋합니다. URL과 SHA256은 릴리스 에셋에서 자동으로 채웁니다.
+2. `v*` 태그 푸시 → 테스트 성공 후 GoReleaser가 GitHub Release를 만들고, `Formula/sssh.rb`를 태그 소스 아카이브 SHA로 갱신한 뒤 `main`에 커밋합니다.
 
 ## 대화 기록
 
