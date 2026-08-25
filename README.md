@@ -175,7 +175,7 @@ internal/tui/           호스트 선택 UI
 워크플로: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 
 1. `main`/`master` 푸시와 Pull Request → `go test`, `go vet`, `go build`, GoReleaser 설정 검사
-2. `v*` 태그 푸시 → 테스트 성공 후 GoReleaser가 GitHub Release를 만들고, `Formula/sssh.rb`를 태그 소스 아카이브 SHA로 갱신한 뒤 `main`에 커밋합니다.
+2. `v*` 태그 푸시 → 테스트 성공 후 GoReleaser가 GitHub Release 바이너리를 올리고, `Formula/sssh.rb`가 그 에셋 URL·SHA256을 가리키도록 `main`에 커밋합니다. 사용자는 Go 없이 바이너리만 받습니다.
 
 ## 대화 기록
 
