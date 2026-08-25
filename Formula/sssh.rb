@@ -1,8 +1,8 @@
 class Sssh < Formula
   desc "SSH into hosts using ~/.ssh/config aliases"
   homepage "https://github.com/dmnkx/homebrew-sssh"
-  url "https://github.com/dmnkx/homebrew-sssh/archive/refs/tags/v0.1.2.tar.gz"
-  sha256 "fd151c57782c15afd070b41555475d5963d193cdae253574b501f5b31d41c9dc"
+  url "https://github.com/dmnkx/homebrew-sssh/archive/refs/tags/v0.1.3.tar.gz"
+  sha256 "1d29b2782d342ab67244c7407dcea36a53184f8228c9f91d48e337461dd1617e"
   license "MIT"
   head "https://github.com/dmnkx/homebrew-sssh.git", branch: "main"
 
